@@ -25,11 +25,27 @@ const PersonForm = ({add, newName, newNumber, nameHandler, numberHandler}) => (
   </form >
 )
 
+const Notification = ({message, error}) => {
+  if (message === null) {
+    return null
+  }
+  const style = {
+    color: error ? "red" : "green"
+  }
+  return (
+    <div className="notification" style={style}>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     personService
@@ -54,6 +70,10 @@ const App = () => {
           .update(oldPerson.id, changedPerson)
           .then(response => {
             setPersons(persons.map(p => p.id !== oldPerson.id ? p : response))
+            setNotification(`Changed number for ${newName}`, false)
+          })
+          .catch(error => {
+            setNotification(`Information of ${newName} has already been removed from server`, true)
           })
       }
     }
@@ -65,7 +85,8 @@ const App = () => {
       personService
         .create(newPerson)
           .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
+            setPersons(persons.concat(returnedPerson))
+            setNotification(`Added ${newName}`, false)
           })
     }
 
@@ -73,11 +94,20 @@ const App = () => {
     setNewNumber('')
   }
 
+  const setNotification = (message, error) => {
+    setError(error)
+    setMessage(message)
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+  }
+
   const removePerson = (person) => {
     if (confirm(`Delete ${person.name} ?`)) {
       personService.remove(person.id).then(response => {
         personService.getAll().then(newPersons => {
           setPersons(newPersons)
+          setNotification(`Deleted ${person.name}`)
         })
       })
     }
@@ -88,6 +118,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} error={error} />
       <Filter filter={filter} handler={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm 
