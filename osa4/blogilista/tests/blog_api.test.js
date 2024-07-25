@@ -109,6 +109,55 @@ test("adding without url gives error", async () => {
         .expect(400)
 })
 
+test("deleting works", async () => {
+    const start = await api.get("/api/blogs")
+    const blogToDelete = start.body[0]
+
+    await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+
+    const end = await api.get("/api/blogs")
+
+    assert.strictEqual(end.body.length, initialBlogs.length - 1)
+
+    const titles = end.body.map(b => b.title)
+    assert(!titles.includes(blogToDelete.title))
+})
+
+test("updating works", async () => {
+    const start = await api.get("/api/blogs")
+    blogToUpdate = start.body[0]
+    blogToUpdate.likes = 15
+
+    await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToUpdate)
+        .expect(200)
+        .expect("Content-Type", /application\/json/)
+
+    const end = await api.get("/api/blogs")
+
+    assert.deepStrictEqual(end.body[0], blogToUpdate)
+})
+
+test("updating with wrong id gives error", async () => {
+    const start = await api.get("/api/blogs")
+    const blogToUpdate = { ...start.body[0] }
+    blogToUpdate.likes = 15
+    
+    const wrongId = start.body[1].id
+    await api.delete(`/api/blogs/${wrongId}`)
+
+    await api
+        .put(`/api/blogs/${wrongId}`)
+        .send(blogToUpdate)
+        .expect(404)
+
+    const end = await api.get("/api/blogs")
+
+    assert.deepStrictEqual(end.body[0], start.body[0])
+})
 
 after(async () => {
     await mongoose.connection.close()
