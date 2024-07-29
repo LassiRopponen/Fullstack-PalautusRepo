@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Fighting Crime in Gotham",
-    "author": "Batman",
-    "url": "batman.com",
-    "likes": "0"
+    "title": "Open source web slinger",
+    "author": "Spiderman",
+    "url": "spiderman.com",
+    "likes": "2"
 }
