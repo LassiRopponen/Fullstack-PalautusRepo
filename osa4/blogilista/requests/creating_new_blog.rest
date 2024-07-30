@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkJhdG1hbiIsImlkIjoiNjZhNzYxNTU4ZDhmYTg3YzA1YzJlZTA5IiwiaWF0IjoxNzIyMzQ3NDUyfQ.WdNjg8OkScN3jM8GclC2KspsWs599bIDgIqF_e1cYuk
 
 {
-    "title": "Open source web slinger",
-    "author": "Spiderman",
-    "url": "spiderman.com",
-    "likes": "2"
+    "title": "Fighting crime",
+    "author": "Batman",
+    "url": "batman.com",
+    "likes": "0"
 }
