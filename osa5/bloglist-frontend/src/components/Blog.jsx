@@ -14,7 +14,7 @@ const Blog = ({ blog, handleLike, handleRemove, user }) => {
   return(
     <div style={blogStyle}>
       <div style={{ marginBottom: 0 }}>
-        <p>{blog.title} {blog.author} <button onClick={() => setVisible(!visible)}>{visible ? 'hide' : 'view'}</button></p>
+        {blog.title} {blog.author} <button onClick={() => setVisible(!visible)}>{visible ? 'hide' : 'view'}</button>
       </div>
       <div style={{ display: visible ? '' : 'none' }}>
         <p>

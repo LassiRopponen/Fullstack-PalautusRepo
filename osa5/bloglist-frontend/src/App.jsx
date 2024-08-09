@@ -73,12 +73,14 @@ const App = () => {
 
   const handleCreate = async (title, author, url) => {
     try {
-      const returnedBlog = await blogService.create({
+      await blogService.create({
         title, author, url
       })
       setNotification(`a new blog ${title} by ${author} added`, false)
       blogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(returnedBlog).sort((a, b) => b.likes - a.likes))
+      blogService.getAll().then(blogs =>
+        setBlogs( blogs.sort((a, b) => b.likes - a.likes ) )
+      )
     }
     catch (exception) {
       setNotification('title and url required', true)
@@ -120,13 +122,13 @@ const App = () => {
       <div>
         <h2>log in to application</h2>
         <Notification message={message} error={error} />
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} data-testid='login-form'>
           <div>
           username
             <input
               type="text"
               value={username}
-              name="Username"
+              data-testid="username-input"
               onChange={({ target }) => setUsername(target.value)}
             />
           </div>
@@ -135,7 +137,7 @@ const App = () => {
             <input
               type="password"
               value={password}
-              name="Password"
+              data-testid="password-input"
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
